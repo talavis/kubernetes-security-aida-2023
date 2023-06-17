@@ -1,0 +1,113 @@
+\documentclass{dcpresentation}
+
+% Presentation info
+\title{Kubernetes}
+\subtitle{Security and stuff}
+\author{Linus Östberg}
+\newcommand{\authorEmail}{linus@oestberg.dev}
+\institute{SciLifeLab Data Centre}
+\date{}
+
+\begin{document}
+ \begin{frame}
+  \maketitle
+ \end{frame}
+ 
+ % put logo in upper right corner to ape the official template
+ \AddToShipoutPictureFG{
+  \AtPageUpperRight{{\includegraphics[width=0.6cm,keepaspectratio]{img/scilifelab-symbol.pdf}}}
+ }%
+
+\begin{frame}
+ \tableofcontents
+\end{frame}
+
+\section{Containers}
+ 
+\begin{frame}{What is a container?}
+ \begin{itemize}
+  \item Running as a process on the host
+  \item Namespaces
+  \item Network, process (pid), filesystem (mount), (users)
+  \item Cgroups (resources: CPU, RAM)
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{Containers and Virtual Machines}
+ \begin{itemize}
+  \item VM --- abstraction it believes it runs on its own computer
+  \item Container --- looks like it's alone, but it is fully aware of its host (kernel)
+ \end{itemize}
+\end{frame}
+
+\section{Kubernetes}
+
+\begin{frame}
+ \begin{itemize}
+  \item Designed to be user-friendly
+  \item By default it's less secure to start a container in Kubernetes than in Docker
+ \end{itemize}
+\end{frame}
+
+\section{Security}
+
+\subsection{Security Context}
+
+\begin{frame}{root == root != root}
+ \begin{itemize}
+  \item Capabilities
+  \item hostUsers
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{Privileged}
+ \begin{itemize}
+  \item 
+ \end{itemize}
+\end{frame}
+
+\subsection{Seccomp, AppArmor, SELinux}
+
+\begin{frame}{Permission Frameworks}
+ \begin{frame}
+  \item Limit what a container can do
+ \end{frame}
+\end{frame}
+
+\subsection{Security Vulnerabilities}
+
+\begin{frame}{Security Vulnerabilities}
+ \begin{itemize}
+  \item No known security vulnerabilities in images
+  \item Scanning using tools
+  \item Trivy etc
+  \item Looks at apt database, package files (yarn.lock; requirements.txt ...)
+ \end{itemize}  
+\end{frame}
+
+\begin{frame}{Security Vulnerabilities}{Malicious Compliance}
+ \begin{itemize}
+  \item \url{https://www.youtube.com/watch?v=9weGi0csBZM}
+  \item Possible to trick the vulnerability scanners
+  \item Remove package files
+  \item Multi-stage builds
+% Demo:
+% Build data tracker production -> scan
+% Scan yarn.lock
+% Build data tracker build step -> scan
+% (scan node:16-alpine) for reference
+ \end{itemize}  
+\end{frame}
+
+\subsection{Secure Runtimes}
+
+\begin{frame}
+ \begin{itemize}
+  \item Run containers using hardened runtimes
+  \item Kata containers
+  \item gVisor
+ \end{itemize}
+\end{frame}
+ 
+
+\end{document}
