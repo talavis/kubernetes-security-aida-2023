@@ -13,99 +13,48 @@
   \maketitle
  \end{frame}
  
- % put logo in upper right corner to ape the official template
- \AddToShipoutPictureFG{
-  \AtPageUpperRight{{\includegraphics[width=0.6cm,keepaspectratio]{img/scilifelab-symbol.pdf}}}
- }%
+%  % put logo in upper right corner to ape the official template
+%  \AddToShipoutPictureFG{
+%   \AtPageUpperRight{{\includegraphics[width=0.6cm,keepaspectratio]{img/scilifelab-symbol.pdf}}}
+%  }%
+
+% \begin{frame}
+%  \tableofcontents
+% \end{frame}
 
 \begin{frame}
- \tableofcontents
+ \centering{ \alert{ \huge What is a container?} }
 \end{frame}
 
-\section{Containers}
- 
-\begin{frame}{What is a container?}
- \begin{itemize}
-  \item Running as a process on the host
-  \item Namespaces
-  \item Network, process (pid), filesystem (mount), (users)
-  \item Cgroups (resources: CPU, RAM)
- \end{itemize}
+% \begin{frame}{What is a container?}
+%  \begin{itemize}
+%   \item Running namespaced processes on a host
+%   \item Namespaces
+%   \item Network, process (pid), filesystem (mount), (users)
+%   \item Cgroups (resources: CPU, RAM)
+%  \end{itemize}
+% \end{frame}
+
+\begin{frame}
+ \centering{ \alert{ \Large What is the difference between a container and a virtual machine?} }
 \end{frame}
 
-\begin{frame}{Containers and Virtual Machines}
- \begin{itemize}
-  \item VM --- abstraction it believes it runs on its own computer
-  \item Container --- looks like it's alone, but it is fully aware of its host (kernel)
- \end{itemize}
-\end{frame}
 
-\section{Kubernetes}
+% \begin{frame}{Containers and Virtual Machines}
+%  \begin{itemize}
+%   \item VM --- abstraction it believes it runs on its own computer
+%   \item Container --- looks like it's alone, but it is fully aware of its host (kernel)
+%  \end{itemize}
+% \end{frame}
 
 \begin{frame}
  \begin{itemize}
-  \item Designed to be user-friendly
-  \item By default it's less secure to start a container in Kubernetes than in Docker
+  \item Containers are not fully isolated
+  \item Taking control of the host means that you have control over all containers
  \end{itemize}
 \end{frame}
 
-\section{Security}
 
-\begin{frame}{OWASP Kubernetes Top Ten}
- \begin{itemize}
-  \item \url{https://owasp.org/www-project-kubernetes-top-ten/}
-  
- \end{itemize}
-
-\end{frame}
-
-\subsection{Admission Control}
-
-\begin{frame}{Kyverno}
-
-\end{frame}
-
-\begin{frame}{Open Policy Agent}
-
-\end{frame}
-
-\begin{frame}{Pod Security Standards}
- \begin{itemize}
-  \item 
- \end{itemize}
-\end{frame}
-
-\begin{frame}
- Service Account Token
- 
-\end{frame}
-
-\begin{frame}
- Network Policies 
-\end{frame}
-
-\subsection{Security Context}
-
-\begin{frame}{root == root != root}
- \begin{itemize}
-  \item Capabilities
-  \item hostUsers
- \end{itemize}
-\end{frame}
-
-\begin{frame}{Privileged}
- \begin{itemize}
-  \item 
- \end{itemize}
-\end{frame}
-
-\subsection{Seccomp, AppArmor, SELinux}
-
-\begin{frame}{Permission Frameworks}
- \begin{itemize}
-  \item Limit what a container can do
- \end{itemize}
-\end{frame}
 
 \begin{frame}{Supply Chain Vulnerabilities}
  \begin{itemize}
@@ -115,8 +64,6 @@
 Signing
 
 \end{frame}
-
-\subsection{Security Vulnerabilities}
 
 \begin{frame}{Security Vulnerabilities}
  \begin{itemize}
@@ -141,7 +88,180 @@ Signing
  \end{itemize}  
 \end{frame}
 
-\subsection{Secure Runtimes}
+
+\begin{frame}{Kubernetes}
+ \begin{itemize}
+  \item Container orchestration
+  \item Designed to be flexible
+  \item Declare wanted state
+  \begin{itemize}
+   \item Reconciliation loop
+  \end{itemize}
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+ \begin{itemize}
+  \item Least Privilege
+  \item Defence in depth (layered security)
+  \item Zero Trust
+ \end{itemize}
+\end{frame}
+
+% starting in k8s by default less secure than starting in e.g. docker 
+
+\begin{frame}{OWASP Kubernetes Top Ten}
+  {\url{https://owasp.org/www-project-kubernetes-top-ten/}}
+ \begin{description}
+  \item[K01] Insecure Workload Configurations
+  \item[K02] Supply Chain Vulnerabilities
+  \item[K03] Overly Permissive RBAC Configurations
+  \item[K04] Lack of Centralized Policy Enforcement
+  \item[K05] Inadequate Logging and Monitoring
+  \item[K06] Broken Authentication Mechanisms
+  \item[K07] Missing Network Segmentation Controls
+  \item[K08] Secrets Management Failures
+  \item[K09] Misconfigured Cluster Components
+  \item[K10] Outdated and Vulnerable Kubernetes Components
+ \end{description}
+\end{frame}
+
+\begin{frame}{K01: Insecure Workload Configurations}
+ \begin{itemize}
+  \item Scanners: kube-score, kubesec, kubeaudit, snyk ...
+  \item Pod Security Standards
+  \item Pod admission: kyverno, Open Policy Agent Gatekeeper
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ Network Policies 
+\end{frame}
+
+\begin{frame}{root == root != root}
+ \begin{itemize}
+  \item Capabilities
+  \item hostUsers
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{Privileged}
+ \begin{itemize}
+  \item 
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{Permission Frameworks}
+ \begin{itemize}
+  \item Limit what a container can do
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{K02: Supply Chain Vulnerabilities}
+ \begin{itemize}
+  \item Security vulnerabilities in third-party libraries
+  \item Insecure/malicious images
+  \item Container signing
+  \item Image minimisation
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{Supply Chain Vulnerabilities}
+ \begin{itemize}
+  \item Signing
+  \item Do not use untrusted images
+ \end{itemize}
+Signing
+
+\end{frame}
+
+\begin{frame}{Security Vulnerabilities}
+ \begin{itemize}
+  \item No known security vulnerabilities in images
+  \item Scanning using tools
+  \item Trivy etc
+  \item Looks at apt database, package files (yarn.lock; requirements.txt ...)
+ \end{itemize}  
+\end{frame}
+
+\begin{frame}{Security Vulnerabilities}{Malicious Compliance}
+ \begin{itemize}
+  \item \url{https://www.youtube.com/watch?v=9weGi0csBZM}
+  \item Possible to trick the vulnerability scanners
+  \item Remove package files
+  \item Multi-stage builds
+% Demo:
+% Build data tracker production -> scan
+% Scan yarn.lock
+% Build data tracker build step -> scan
+% (scan node:16-alpine) for reference
+ \end{itemize}  
+\end{frame}
+
+\begin{frame}{K03: Overly Permissive RBAC Configurations}
+ \begin{itemize}
+  \item Least Privilege
+  \item Service account and user RBAC permissions
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ Service Account Token
+ 
+\end{frame}
+
+\begin{frame}{K04: Lack of Centralized Policy Enforcement}
+ \begin{itemize}
+  \item OPA Gatekeeper, Kyverno
+  \item ``Policies in git''
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{K05: Inadequate Logging and Monitoring}
+ \begin{itemize}
+  \item Audit logs, logs in external system
+  \item Falco etc for monitoring
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{K06: Broken Authentication Mechanisms}
+ \begin{itemize}
+  \item certificate = forever
+  \item Service account tokens
+  \item use MFA if possible
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{K07: Missing Network Segmentation Controls}
+ \begin{itemize}
+  \item Zero trust 
+  \item Network policies
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{K08: Secrets Management Failures}
+ \begin{itemize}
+  \item Encrypt secrets
+  \item Vault
+  \item Sealed secrets etc
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{K09: Misconfigured Cluster Components}
+ \begin{itemize}
+  \item CIS Benchmarks (kube-bench)
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame}{K10: Outdated and Vulnerable Kubernetes Components}
+ \begin{itemize}
+  \item Keep things updated
+ \end{itemize}
+\end{frame}
+
+
 
 \begin{frame}
  \begin{itemize}
@@ -156,4 +276,6 @@ Signing
  Container Drift --- Neuvector, Aqua?
  \end{frame}
 
+ Falco
+ 
 \end{document}
