@@ -12,28 +12,13 @@
  \begin{frame}
   \maketitle
  \end{frame}
- 
-%  % put logo in upper right corner to ape the official template
-%  \AddToShipoutPictureFG{
-%   \AtPageUpperRight{{\includegraphics[width=0.6cm,keepaspectratio]{img/scilifelab-symbol.pdf}}}
-%  }%
-
-% \begin{frame}
-%  \tableofcontents
-% \end{frame}
 
 \begin{frame}
  \centering{ \alert{ \huge What is a container?} }
 \end{frame}
-
-% \begin{frame}{What is a container?}
-%  \begin{itemize}
-%   \item Running namespaced processes on a host
-%   \item Namespaces
-%   \item Network, process (pid), filesystem (mount), (users)
-%   \item Cgroups (resources: CPU, RAM)
-%  \end{itemize}
-% \end{frame}
+% Running namespaced processes on a host
+% Network, process (pid), filesystem (mount), (users)
+% Cgroups (resources: CPU, RAM)
 
 \begin{frame}
  \centering{ \alert{ \Large What is the difference between a container and a virtual machine?} }
@@ -53,41 +38,6 @@
   \item Taking control of the host means that you have control over all containers
  \end{itemize}
 \end{frame}
-
-
-
-\begin{frame}{Supply Chain Vulnerabilities}
- \begin{itemize}
-  \item Signing
-  \item Do not use untrusted images
- \end{itemize}
-Signing
-
-\end{frame}
-
-\begin{frame}{Security Vulnerabilities}
- \begin{itemize}
-  \item No known security vulnerabilities in images
-  \item Scanning using tools
-  \item Trivy etc
-  \item Looks at apt database, package files (yarn.lock; requirements.txt ...)
- \end{itemize}  
-\end{frame}
-
-\begin{frame}{Security Vulnerabilities}{Malicious Compliance}
- \begin{itemize}
-  \item \url{https://www.youtube.com/watch?v=9weGi0csBZM}
-  \item Possible to trick the vulnerability scanners
-  \item Remove package files
-  \item Multi-stage builds
-% Demo:
-% Build data tracker production -> scan
-% Scan yarn.lock
-% Build data tracker build step -> scan
-% (scan node:16-alpine) for reference
- \end{itemize}  
-\end{frame}
-
 
 \begin{frame}{Kubernetes}
  \begin{itemize}
@@ -127,34 +77,100 @@ Signing
  \end{description}
 \end{frame}
 
-\begin{frame}{K01: Insecure Workload Configurations}
+\begin{frame}{K10: Outdated and Vulnerable Kubernetes Components}
  \begin{itemize}
-  \item Scanners: kube-score, kubesec, kubeaudit, snyk ...
-  \item Pod Security Standards
-  \item Pod admission: kyverno, Open Policy Agent Gatekeeper
+  \item Keep Kubernetes updated
+  \item Three most recent minor releases:
+  \begin{itemize}
+   \item 1.28
+   \item 1.27
+   \item 1.26
+  \end{itemize}
+  \item $\sim$1 year support
+  \item Distributions may be supported longer
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{K09: Misconfigured Cluster Components}
+ \begin{itemize}
+  \item CIS Benchmarks (kube-bench)
+  % show examples from a CIS benchmark
+ \end{itemize}
+\end{frame}
+%TASK: run kube-bench
+% https://killercoda.com/killer-shell-cks/scenario/cis-benchmarks-kube-bench-fix-controlplane
+
+\begin{frame}{K08: Secrets Management Failures}
+ \begin{itemize}
+  \item Encrypt secrets
+  \item Vault
+  \item Sealed secrets etc
+ \end{itemize}
+\end{frame}
+
+% TASK: look at secrets in etcd: encrypted?
+
+\begin{frame}{K07: Missing Network Segmentation Controls}
+ \begin{itemize}
+  \item Zero trust 
+  \item Network policies
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{Network Policies}
+ \begin{itemize}
+  \item \url{https://editor.networkpolicy.io/}
+  \item Default: deny-all for namespace
+  \item Minimise access
+ \end{itemize}
+ 
+ % TASK: make a network policy
+ % Form manager? Menu page?
+\end{frame}
+
+\begin{frame}{K06: Broken Authentication Mechanisms}
+ \begin{itemize}
+  \item certificate = forever
+  \item Service account tokens
+  \item use MFA if possible
+ \end{itemize}
+\end{frame}
+
+% DEMO: rancher - github
+
+\begin{frame}{K05: Inadequate Logging and Monitoring}
+ \begin{itemize}
+  \item Audit logs, logs in external system
+  \item Falco etc for monitoring
+  \item Fluentbit etc
+  \item Loki
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{K04: Lack of Centralized Policy Enforcement}
+ \begin{itemize}
+  \item OPA Gatekeeper, Kyverno
+  \item ``Policies in git''
  \end{itemize}
 \end{frame}
 
 \begin{frame}
- Network Policies 
-\end{frame}
-
-\begin{frame}{root == root != root}
  \begin{itemize}
-  \item Capabilities
-  \item hostUsers
+  \item GitOps --- Argo
+  \item Infrastructure as code
+  \item Ansible
+  \item ``Replace one node every month''
  \end{itemize}
 \end{frame}
 
-\begin{frame}{Privileged}
- \begin{itemize}
-  \item 
- \end{itemize}
-\end{frame}
+% DEMO: Argo
 
-\begin{frame}{Permission Frameworks}
+\begin{frame}{K03: Overly Permissive RBAC Configurations}
  \begin{itemize}
-  \item Limit what a container can do
+  \item Least Privilege
+  \item Service account and user RBAC permissions
+  \item Limit use of ClusterRoleBinding
+  \item Not everyone needs admin permissions
  \end{itemize}
 \end{frame}
 
@@ -185,82 +201,83 @@ Signing
  \end{itemize}  
 \end{frame}
 
+
+% TASK: build and scan image
+% vulnerable node modules
+% no warning in image
+% https://github.com/ScilifelabDataCentre/lunch-menu
+% Latest deployed frontend: any security issues?
+% 
+
+\begin{frame}{TASK: image and code scanning}
+ \begin{itemize}
+  \item \url{https://github.com/ScilifelabDataCentre/lunch-menu}
+  \item Does menu-frontend:latest contain any known vulnerabilities?
+  \item Use Trivy or any other relevant tools
+  \item \texttt{trivy image container:label}
+ \end{itemize}
+\end{frame}
+
+
 \begin{frame}{Security Vulnerabilities}{Malicious Compliance}
  \begin{itemize}
   \item \url{https://www.youtube.com/watch?v=9weGi0csBZM}
   \item Possible to trick the vulnerability scanners
-  \item Remove package files
+  \item Remove package management files
+  \item Symlinks
   \item Multi-stage builds
-% Demo:
-% Build data tracker production -> scan
-% Scan yarn.lock
-% Build data tracker build step -> scan
-% (scan node:16-alpine) for reference
  \end{itemize}  
 \end{frame}
 
-\begin{frame}{K03: Overly Permissive RBAC Configurations}
+% scanners:
+% package database
+% yarn.lock, requirements.txt etc
+% standard installation paths etc
+% cim
+
+\begin{frame}{K01: Insecure Workload Configurations}
  \begin{itemize}
-  \item Least Privilege
-  \item Service account and user RBAC permissions
+  \item Scanners: kube-score, kubesec, kubeaudit, snyk ...
+  \item Pod Security Standards
+  \item Pod admission: kyverno, Open Policy Agent Gatekeeper
  \end{itemize}
 \end{frame}
 
-\begin{frame}
- Service Account Token
- 
+\begin{frame}{Pod Security Standards}
+ \begin{itemize}
+  \item \url{https://kubernetes.io/docs/concepts/security/pod-security-standards/}
+  \item Apply to a namespace
+  \item \texttt{pod-security.kubernetes.io/<MODE>: <LEVEL>}
+  \item \texttt{pod-security.kubernetes.io/<MODE>-version: <VERSION>}
+  \item Enforce, audit, warn
+ \end{itemize}
+
 \end{frame}
 
-\begin{frame}{K04: Lack of Centralized Policy Enforcement}
+
+\begin{frame}{root == root != root}
  \begin{itemize}
-  \item OPA Gatekeeper, Kyverno
-  \item ``Policies in git''
+  \item Capabilities
+  % demo: iptables
+  \item hostUsers
  \end{itemize}
 \end{frame}
 
-\begin{frame}{K05: Inadequate Logging and Monitoring}
+\begin{frame}{Privileged}
  \begin{itemize}
-  \item Audit logs, logs in external system
-  \item Falco etc for monitoring
+  \item 
  \end{itemize}
 \end{frame}
 
-\begin{frame}{K06: Broken Authentication Mechanisms}
+% TASK: Make deployment follow Pod security standard - restricted 
+
+\begin{frame}{TASK: Create a hardened deployment}
  \begin{itemize}
-  \item certificate = forever
-  \item Service account tokens
-  \item use MFA if possible
+  \item Make a deployment of \texttt{ghcr.io/scilifelabdatacentre/menu-backend:latest}
+  \item Create a new namespace and apply the pod security standard restricted to it
+  \item Update your deployment to allow deployment in the created namespace
  \end{itemize}
 \end{frame}
-
-\begin{frame}{K07: Missing Network Segmentation Controls}
- \begin{itemize}
-  \item Zero trust 
-  \item Network policies
- \end{itemize}
-\end{frame}
-
-\begin{frame}{K08: Secrets Management Failures}
- \begin{itemize}
-  \item Encrypt secrets
-  \item Vault
-  \item Sealed secrets etc
- \end{itemize}
-\end{frame}
-
-\begin{frame}{K09: Misconfigured Cluster Components}
- \begin{itemize}
-  \item CIS Benchmarks (kube-bench)
- \end{itemize}
-\end{frame}
-
-
-\begin{frame}{K10: Outdated and Vulnerable Kubernetes Components}
- \begin{itemize}
-  \item Keep things updated
- \end{itemize}
-\end{frame}
-
 
 
 \begin{frame}
@@ -270,12 +287,19 @@ Signing
   \item gVisor
  \end{itemize}
 \end{frame}
+% TASK: https://killercoda.com/killer-shell-cks/scenario/sandbox-gvisor
  
+ \begin{frame}{Compliance}
+  \begin{itemize}
+   \item Not just a checklist
+   \item Aid to make your systems more secure 
+  \end{itemize}
+ \end{frame}
+
  
  \begin{frame}
  Container Drift --- Neuvector, Aqua?
  \end{frame}
-
- Falco
+ % DEMO: Neuvector
  
 \end{document}
