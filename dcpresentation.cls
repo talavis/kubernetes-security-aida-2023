@@ -22,6 +22,8 @@
 % \usepackage{bookman}
 \usepackage{times}
 
+\usepackage[pro]{fontawesome5}
+
 % itemize symbols
 \setbeamertemplate{itemize item}[triangle]
 \setbeamertemplate{itemize subitem}[circle]

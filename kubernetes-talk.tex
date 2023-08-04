@@ -4,7 +4,7 @@
 \title{Kubernetes}
 \subtitle{Security and stuff}
 \author{Linus Östberg}
-\newcommand{\authorEmail}{linus@oestberg.dev}
+\newcommand{\authorEmail}{linus@scilifelab.uu.se}
 \institute{SciLifeLab Data Centre}
 \date{}
 
@@ -13,12 +13,68 @@
   \maketitle
 \end{frame}
 
-\begin{frame}{Running With Scissors}
-  \url{https://www.youtube.com/watch?v=ltrV-Qmh3oY}
+\begin{frame}{Who am I?}
+ \begin{columns}
+  \column{0.35\textwidth}
+{\includegraphics[width=0.7\textwidth]{img/linus.png}}
+  \column{0.65\textwidth}
+  {\LARGE \scshape \bf Linus Östberg}
+  
+  {\small SciLifeLab Data Centre} \\
+  {\tiny (soon Conoa AB)}
+
+  \vspace{20pt}
+  
+  \begin{tabular}{cl}
+   \faGithub & \href{https://github.com/talavis}{talavis} \\
+   \faEnvelope & \href{mailto:linus@oestberg.dev}{linus@oestberg.dev}
+  \end{tabular}
+ \end{columns}
+ 
+ \vspace{50pt}
+ 
+ \begin{columns}
+ \column{0.42\textwidth}
+ \column{0.58\textwidth}
+  \includegraphics[height=1.3cm]{img/ckad.png}
+  \includegraphics[height=1.3cm]{img/cka.png}
+  \includegraphics[height=1.3cm]{img/cks.png}
+  \includegraphics[height=1.3cm]{img/cc.png}
+  \end{columns}
 \end{frame}
 
+\section{Security Fundamentals}
 
-\begin{frame}{Security in Kubernetes}
+\begin{frame}{Where to start?}
+ \begin{itemize}
+  \item Risk assessment
+  \item Threat modelling
+  \item Laws
+  \item Requirements from organisations
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{CIA}
+ \begin{itemize}
+  \item Confidentiality
+  \item Integrity
+  \item Availability
+ \end{itemize}
+\end{frame}
+% DAD - disclosure, alteration, destruction
+% DREAD - Damage potential, reproducibility, exploitability, affected users, discoverability
+% STRIDE - spoofing, tampering, repudiation, information disclosure, denial of service, elevation of priviledge
+
+\begin{frame}{Fundamentals}
+ \begin{itemize}
+  \item Defence in depth
+  \item Least privilege
+  \item Zero trust
+  \item Separation of duties
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{Cloud-native Security}
   \begin{itemize}
   \item Code
   \item Containers
@@ -32,8 +88,8 @@
 \begin{frame}{Code}
   \begin{itemize}
   \item Security starts in the application
+  % Compromised app often means that all data for the app is exposed
   \item Secure software development
-  \item SAST, DAST, IAST, RASP ...
   \end{itemize}
 \end{frame}
 
@@ -42,7 +98,7 @@
   \item Trusting third-party libraries
     \begin{itemize}
     \item Have you analysed the code of all third-party libraries before use?
-    \item Do you verify their integrity?
+    \item Did you verify their integrity?
     \end{itemize}
   \item Do you keep all libraries up-to-date?
   \end{itemize}
@@ -77,6 +133,10 @@
   \centering{ \alert{ \huge What is a container?} }
 \end{frame}
 
+\begin{frame}
+  \centering{ \alert{ \Large What are the differences between a container and a virtual machine?} }
+\end{frame}
+
 \begin{frame}{Containers}
   \begin{itemize}
   \item Namespaced processes
@@ -89,40 +149,27 @@
   \end{itemize}
 \end{frame}
 
-
 % Running namespaced processes on a host
 % Network, process (pid), filesystem (mount), (users), UTS (domain/hostname), IPC (inter-process communiation (shared memory etc)
 % Cgroups (resources: CPU, RAM)
+% lsns
 
-\begin{frame}
-  \centering{ \alert{ \Large What are the differences between a container and a virtual machine?} }
-\end{frame}
-
-% \begin{frame}{Containers and Virtual Machines}
-%  \begin{itemize}
-%   \item VM --- abstraction it believes it runs on its own computer
-%   \item Container --- looks like it's alone, but it is fully aware of its host (kernel)
-%  \end{itemize}
-% \end{frame}
-
-\begin{frame}
-  \begin{itemize}
-  \item Containers share the kernel
-  \item \alert<2>{Very sensitive data should be in different vms/clusters}
-  \end{itemize}
-\end{frame}
 
 \begin{frame}{Container Runtimes}
   \begin{itemize}
   \item Docker
   \item Containerd
   \item CRI-O
+  \item Gvisor
+  \item Kata
+  \item Firecracker
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Container Runtimes}
+\begin{frame}
   \begin{itemize}
-  \item A lot of security be default
+  \item Containers share the kernel
+  \item \alert<2>{Very sensitive data should be in different vms/clusters}
   \end{itemize}
 \end{frame}
 
@@ -135,41 +182,118 @@
   \item Capabilities
     % demo: iptables
   \item hostUsers
+  \item Privileged container == danger
   \end{itemize}
 \end{frame}
+
 % DEMO: 
 % docker run -it --rm nginx bash
 % docker run -it --cap-add=NET_ADMIN --rm nginx bash
 % docker run -it --privileged --rm nginx bash
 
+% DEMO:
+% docker run -it -v /:/host:rw --rm nginx bash
+% touch asd /host/Applications
+% docker run -it -u 10000 -v /:/host:rw --rm nginx bash
+% touch asd /host/Applications
+
 \begin{frame}
   \begin{itemize}
   \item Run containers using hardened runtimes
-  \item Kata containers
-  \item gVisor
+  \item Kata containers (virtualisation)
+  \item gVisor (sandbox)
   \end{itemize}
 \end{frame}
+
+\begin{frame}{TASK: use gvisor}
+ \begin{itemize}
+  \item \url{https://killercoda.com/killer-shell-cks/scenario/sandbox-gvisor}
+ \end{itemize}
+\end{frame}
+
 % TASK: https://killercoda.com/killer-shell-cks/scenario/sandbox-gvisor
 
-\begin{frame}
-  Container Drift --- Neuvector, Aqua?
+\begin{frame}{Container drift}
+ \begin{itemize}
+  \item Preventing containers from doing unintended actions
+ \end{itemize}
 \end{frame}
-% DEMO: Neuvector
 
-
-
-
-\begin{frame}
+\begin{frame}{Seccomp, Apparmor, SELinux}
   \begin{itemize}
-  \item 
+  \item Security frameworks to add extra security
+  \item Ubuntu: seccomp, apparmor
+  \item Red Hat: seccomp, selinux
+  \item Define a security profile to be used with a container
+  \item Optimal security: define a specialised profile for each container
+  \item Using the "runtime default" is better than nothing
   \end{itemize}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{TASK: using Apparmor}
+ \begin{itemize}
+  \item \url{https://killercoda.com/killer-shell-cks/scenario/apparmor}
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Security Vulnerabilities}
   \begin{itemize}
-  \item 
+  \item Scan the packaged software in container images
+  \item E.g. Trivy
   \end{itemize}
 \end{frame}
+
+
+\begin{frame}{TASK: image and code scanning}
+  \begin{itemize}
+  \item \url{https://github.com/ScilifelabDataCentre/lunch-menu}
+  \item Do the latest container images contain any known vulnerabilities?
+  \item Use Trivy or any other scanner
+  \item \texttt{trivy image container:label}
+  \end{itemize}
+\end{frame}
+
+% something off 
+% - why do we have fewer issues now than in the earlier fs scan?
+% - why is there a security issue in backend?
+% check the Dockerfile
+
+\begin{frame}{Malicious Compliance}
+  \begin{itemize}
+  \item \url{https://www.youtube.com/watch?v=9weGi0csBZM}
+  \item Possible to trick the vulnerability scanners
+  \begin{itemize}
+  \item Remove package management files
+  \item Symlinks
+  \item Multi-stage builds
+  \end{itemize} 
+  \end{itemize}  
+\end{frame}
+
+% scanners:
+% package database
+% yarn.lock, requirements.txt etc
+% standard installation paths etc
+% cim
+
+\begin{frame}{Building containers}
+ \begin{itemize}
+  \item Minimise
+  \begin{itemize}
+   \item Minimal base % alpine, scratch, distroless
+   \item Remove unused binaries
+   \item Squash layers % slim, dive
+  \end{itemize}
+  \item Never include secrets during the build steps
+  \item Automate
+  \item Do not run as root
+  \item Immutable
+ \end{itemize}
+\end{frame}
+
+% DEMO: improving a Dockerfile
+% https://github.com/ScilifelabDataCentre/lunch-menu/tree/dockerfile-bad
 
 \begin{frame}{Kubernetes}
   \begin{itemize}
@@ -183,6 +307,18 @@
 \end{frame}
 
 % starting in k8s by default less secure than starting in e.g. docker 
+
+\begin{frame}{Running With Scissors}
+  \url{https://www.youtube.com/watch?v=ltrV-Qmh3oY}
+% going from a "minimal" user to full root rights on all nodes
+\end{frame}
+
+% service account with pod * permissions
+% extract token
+% start privileged ubuntu pod
+% host filesystem as well?
+% nsenter -t 1 -a bash
+% create invisible pod (non-existing namespace static pod)
 
 \begin{frame}{OWASP Kubernetes Top Ten}
   {\url{https://owasp.org/www-project-kubernetes-top-ten/}}
@@ -220,6 +356,12 @@
     % show examples from a CIS benchmark
   \end{itemize}
 \end{frame}
+
+\begin{frame}{TASK: Using kube-bench}
+ \begin{itemize}
+  \url{https://killercoda.com/killer-shell-cks/scenario/cis-benchmarks-kube-bench-fix-controlplane}
+ \end{itemize}
+\end{frame}
 %TASK: run kube-bench
 % https://killercoda.com/killer-shell-cks/scenario/cis-benchmarks-kube-bench-fix-controlplane
 
@@ -231,7 +373,11 @@
   \end{itemize}
 \end{frame}
 
-% TASK: look at secrets in etcd: encrypted?
+\begin{frame}{TASK: encrypting ETCD}
+ \begin{itemize}
+  \url{https://killercoda.com/killer-shell-cks/scenario/secret-etcd-encryption}
+ \end{itemize}
+\end{frame}
 
 \begin{frame}{K07: Missing Network Segmentation Controls}
   \begin{itemize}
@@ -246,6 +392,12 @@
   \item Default: deny-all for namespace
   \item Minimise access
   \end{itemize}
+  
+\begin{frame}{TASK: Creating network policies}
+ \begin{itemize}
+   \item 
+ \end{itemize}
+\end{frame}  
   
   % TASK: make a network policy
   % Form manager? Menu page?
@@ -275,6 +427,10 @@
   \item OPA Gatekeeper, Kyverno
   \item ``Policies in git''
   \end{itemize}
+\end{frame}
+
+\begin{frame}{TASK: Using Kyverno}
+ https://killercoda.com/kyverno/scenario/intro
 \end{frame}
 
 \begin{frame}
@@ -315,48 +471,6 @@
 
 \end{frame}
 
-\begin{frame}{Security Vulnerabilities}
-  \begin{itemize}
-  \item No known security vulnerabilities in images
-  \item Scanning using tools
-  \item Trivy etc
-  \item Looks at apt database, package files (yarn.lock; requirements.txt ...)
-  \end{itemize}  
-\end{frame}
-
-
-% TASK: build and scan image
-% vulnerable node modules
-% no warning in image
-% https://github.com/ScilifelabDataCentre/lunch-menu
-% Latest deployed frontend: any security issues?
-% 
-
-\begin{frame}{TASK: image and code scanning}
-  \begin{itemize}
-  \item \url{https://github.com/ScilifelabDataCentre/lunch-menu}
-  \item Does menu-frontend:latest contain any known vulnerabilities?
-  \item Use Trivy or any other relevant tools
-  \item \texttt{trivy image container:label}
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}{Security Vulnerabilities}{Malicious Compliance}
-  \begin{itemize}
-  \item \url{https://www.youtube.com/watch?v=9weGi0csBZM}
-  \item Possible to trick the vulnerability scanners
-  \item Remove package management files
-  \item Symlinks
-  \item Multi-stage builds
-  \end{itemize}  
-\end{frame}
-
-% scanners:
-% package database
-% yarn.lock, requirements.txt etc
-% standard installation paths etc
-% cim
 
 \begin{frame}{K01: Insecure Workload Configurations}
   \begin{itemize}
@@ -406,7 +520,14 @@
   \end{itemize}
 \end{frame}
 
+\begin{frame}{Gitops}
 
+\end{frame}
+
+\begin{frame}{Enforcement}
+% pod configuration
+
+\end{frame}
 
 \begin{frame}
   \begin{itemize}
@@ -415,6 +536,5 @@
   \item Zero Trust
   \end{itemize}
 \end{frame}
-
 
 \end{document}
