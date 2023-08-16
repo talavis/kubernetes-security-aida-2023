@@ -34,8 +34,9 @@
  \vspace{50pt}
  
  \begin{columns}
- \column{0.42\textwidth}
- \column{0.58\textwidth}
+ \column{0.35\textwidth}
+ \column{0.65\textwidth}
+  \includegraphics[height=1.3cm]{img/kcna.png}
   \includegraphics[height=1.3cm]{img/ckad.png}
   \includegraphics[height=1.3cm]{img/cka.png}
   \includegraphics[height=1.3cm]{img/cks.png}
@@ -49,8 +50,7 @@
  \begin{itemize}
   \item Risk assessment
   \item Threat modelling
-  \item Laws
-  \item Requirements from organisations
+  \item Laws, regulations
  \end{itemize}
 \end{frame}
 
@@ -61,16 +61,12 @@
   \item Availability
  \end{itemize}
 \end{frame}
-% DAD - disclosure, alteration, destruction
-% DREAD - Damage potential, reproducibility, exploitability, affected users, discoverability
-% STRIDE - spoofing, tampering, repudiation, information disclosure, denial of service, elevation of priviledge
 
 \begin{frame}{Fundamentals}
  \begin{itemize}
   \item Defence in depth
   \item Least privilege
   \item Zero trust
-  \item Separation of duties
  \end{itemize}
 \end{frame}
 
@@ -88,7 +84,6 @@
 \begin{frame}{Code}
   \begin{itemize}
   \item Security starts in the application
-  % Compromised app often means that all data for the app is exposed
   \item Secure software development
   \end{itemize}
 \end{frame}
@@ -97,10 +92,10 @@
   \begin{itemize}
   \item Trusting third-party libraries
     \begin{itemize}
-    \item Have you analysed the code of all third-party libraries before use?
-    \item Did you verify their integrity?
+    \item Code evaluation?
+    \item Integrity check?
     \end{itemize}
-  \item Do you keep all libraries up-to-date?
+  \item Up-to-date?
   \end{itemize}
 \end{frame}
 
@@ -359,10 +354,11 @@
 
 \begin{frame}{TASK: Using kube-bench}
  \begin{itemize}
-  \url{https://killercoda.com/killer-shell-cks/scenario/cis-benchmarks-kube-bench-fix-controlplane}
+  \item \url{https://killercoda.com/killer-shell-cks/scenario/cis-benchmarks-kube-bench-fix-controlplane}
  \end{itemize}
 \end{frame}
-%TASK: run kube-bench
+
+% TASK: run kube-bench
 % https://killercoda.com/killer-shell-cks/scenario/cis-benchmarks-kube-bench-fix-controlplane
 
 \begin{frame}{K08: Secrets Management Failures}
@@ -375,7 +371,7 @@
 
 \begin{frame}{TASK: encrypting ETCD}
  \begin{itemize}
-  \url{https://killercoda.com/killer-shell-cks/scenario/secret-etcd-encryption}
+  \item \url{https://killercoda.com/killer-shell-cks/scenario/secret-etcd-encryption}
  \end{itemize}
 \end{frame}
 
@@ -392,22 +388,23 @@
   \item Default: deny-all for namespace
   \item Minimise access
   \end{itemize}
-  
+\end{frame}
+ 
 \begin{frame}{TASK: Creating network policies}
  \begin{itemize}
-   \item 
+   \item \url{https://editor.networkpolicy.io/}
+   \item \url{https://killercoda.com/killer-shell-cks/scenario/networkpolicy-namespace-communication}
  \end{itemize}
 \end{frame}  
-  
-  % TASK: make a network policy
-  % Form manager? Menu page?
-\end{frame}
+ 
+
 
 \begin{frame}{K06: Broken Authentication Mechanisms}
   \begin{itemize}
-  \item certificate = forever
-  \item Service account tokens
-  \item use MFA if possible
+    \item Certificates last until expiration
+      \item No certificate revocation list
+    \item Service account tokens
+    \item use MFA if possible
   \end{itemize}
 \end{frame}
 
@@ -480,6 +477,57 @@
   \end{itemize}
 \end{frame}
 
+% Root user/group
+% do not mount token
+% service account - do not mount token
+% apparmor/seccomp
+% immutability
+% container drift - neuvector
+
+\begin{frame}{No root}
+  \begin{itemize}
+    \item 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Service account tokens}
+  \begin{itemize}
+    \item 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{TASK: attack token}
+  \begin{itemize}
+    \item 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Apparmor/seccomp}
+  \begin{itemize}
+    \item 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Immutability}
+  \begin{itemize}
+    \item 
+  \end{itemize}
+\end{frame}
+
+% TASK: Make deployment follow Pod security standard - restricted 
+
+\begin{frame}{Enforcement}
+  \begin{itemize}
+    \item 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Gitops}
+  \begin{itemize}
+    \item 
+  \end{itemize}
+\end{frame}
+
 \begin{frame}{Pod Security Standards}
   \begin{itemize}
   \item \url{https://kubernetes.io/docs/concepts/security/pod-security-standards/}
@@ -488,17 +536,14 @@
   \item \texttt{pod-security.kubernetes.io/<MODE>-version: <VERSION>}
   \item Enforce, audit, warn
   \end{itemize}
-
 \end{frame}
-
-
-% TASK: Make deployment follow Pod security standard - restricted 
 
 \begin{frame}{TASK: Create a hardened deployment}
   \begin{itemize}
   \item Make a deployment of \texttt{ghcr.io/scilifelabdatacentre/menu-backend:latest}
   \item Create a new namespace and apply the pod security standard restricted to it
   \item Update your deployment to allow deployment in the created namespace
+  \item Optional: add network policies or any other relevant protections
   \end{itemize}
 \end{frame}
 
@@ -518,15 +563,6 @@
   \item Not just a checklist
   \item Aid to make your systems more secure 
   \end{itemize}
-\end{frame}
-
-\begin{frame}{Gitops}
-
-\end{frame}
-
-\begin{frame}{Enforcement}
-% pod configuration
-
 \end{frame}
 
 \begin{frame}
