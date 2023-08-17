@@ -85,6 +85,7 @@
   \begin{itemize}
   \item Security starts in the application
   \item Secure software development
+  \item Usable by default, not secure
   \end{itemize}
 \end{frame}
 
@@ -101,7 +102,7 @@
 
 \begin{frame}{Third-party security vulnerabilities}
   \begin{itemize}
-  \item Automated warnings about security vulnerabilities
+  \item Vulnerability scanning
   \item Snyk
   \item Trivy
   \item Dependabot
@@ -128,13 +129,13 @@
   \centering{ \alert{ \huge What is a container?} }
 \end{frame}
 
-\begin{frame}
-  \centering{ \alert{ \Large What are the differences between a container and a virtual machine?} }
-\end{frame}
+% Running namespaced processes on a host
+% Network, process (pid), filesystem (mount), (users), UTS (domain/hostname), IPC (inter-process communiation (shared memory etc)
+% Cgroups (resources: CPU, RAM)
+% lsns
 
-\begin{frame}{Containers}
+\begin{frame}{Open Container Initiative}
   \begin{itemize}
-  \item Namespaced processes
   \item OCI
     \begin{itemize}
     \item Image
@@ -143,12 +144,6 @@
     \end{itemize}
   \end{itemize}
 \end{frame}
-
-% Running namespaced processes on a host
-% Network, process (pid), filesystem (mount), (users), UTS (domain/hostname), IPC (inter-process communiation (shared memory etc)
-% Cgroups (resources: CPU, RAM)
-% lsns
-
 
 \begin{frame}{Container Runtimes}
   \begin{itemize}
@@ -162,9 +157,13 @@
 \end{frame}
 
 \begin{frame}
+  \centering{ \alert{ \Large What are the differences between a container and a virtual machine?} }
+\end{frame}
+
+\begin{frame}
   \begin{itemize}
   \item Containers share the kernel
-  \item \alert<2>{Very sensitive data should be in different vms/clusters}
+  \item \alert{Very sensitive data should be in different vms/clusters}
   \end{itemize}
 \end{frame}
 
@@ -178,6 +177,7 @@
     % demo: iptables
   \item hostUsers
   \item Privileged container == danger
+  \item<2> \alert{Do not run your containers as root}
   \end{itemize}
 \end{frame}
 
@@ -192,7 +192,7 @@
 % docker run -it -u 10000 -v /:/host:rw --rm nginx bash
 % touch asd /host/Applications
 
-\begin{frame}
+\begin{frame}{Hardened container runtimes}
   \begin{itemize}
   \item Run containers using hardened runtimes
   \item Kata containers (virtualisation)
