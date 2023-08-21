@@ -202,15 +202,18 @@
 
 \begin{frame}{TASK: use gvisor}
  \begin{itemize}
+  \item RuntimeClass
   \item \url{https://killercoda.com/killer-shell-cks/scenario/sandbox-gvisor}
  \end{itemize}
 \end{frame}
 
 % TASK: https://killercoda.com/killer-shell-cks/scenario/sandbox-gvisor
 
-\begin{frame}{Container drift}
+\begin{frame}{Container Drift}
  \begin{itemize}
-  \item Preventing containers from doing unintended actions
+  \item Containers are often intended to do only one thing
+  \item Containers that do other things are "drifting"
+  \item Preventing drift may improve security
  \end{itemize}
 \end{frame}
 
@@ -227,14 +230,27 @@
 
 \begin{frame}{TASK: using Apparmor}
  \begin{itemize}
+  \item \texttt{\scriptsize container.apparmor.security.beta.kubernetes.io/<container\_name>: <profile\_ref>}
+  \item \texttt{runtime/default}
+  \item \texttt{localhost/k8s-apparmor-deny-everything}
+  \item Create profile, make sure it exists on all nodes where the container may run
   \item \url{https://killercoda.com/killer-shell-cks/scenario/apparmor}
  \end{itemize}
 \end{frame}
 
+\begin{frame}{Supply Chain Security}
+  \begin{itemize}
+  \item Security vulnerabilities in third-party libraries
+  \item Insecure/malicious images
+  \item Container signing
+  \item Image minimisation
+  \end{itemize}
+\end{frame}
 
 \begin{frame}{Security Vulnerabilities}
   \begin{itemize}
-  \item Scan the packaged software in container images
+  \item Scan the container images
+  \item Discover issues in the application and helper files
   \item E.g. Trivy
   \end{itemize}
 \end{frame}
@@ -244,15 +260,13 @@
   \begin{itemize}
   \item \url{https://github.com/ScilifelabDataCentre/lunch-menu}
   \item Do the latest container images contain any known vulnerabilities?
+  \item Does the containers with tag 23.7.2 contain any known vulnerabilities?
   \item Use Trivy or any other scanner
   \item \texttt{trivy image container:label}
+  \item Does this make sense?
   \end{itemize}
 \end{frame}
 
-% something off 
-% - why do we have fewer issues now than in the earlier fs scan?
-% - why is there a security issue in backend?
-% check the Dockerfile
 
 \begin{frame}{Malicious Compliance}
   \begin{itemize}
@@ -287,8 +301,15 @@
  \end{itemize}
 \end{frame}
 
-% DEMO: improving a Dockerfile
-% https://github.com/ScilifelabDataCentre/lunch-menu/tree/dockerfile-bad
+
+\section{Kubernetes}
+
+
+\begin{frame}{Running With Scissors}
+  \url{https://www.youtube.com/watch?v=ltrV-Qmh3oY}
+% going from a "minimal" user to full root rights on all nodes
+\end{frame}
+
 
 \begin{frame}{Kubernetes}
   \begin{itemize}
@@ -301,19 +322,6 @@
   \end{itemize}
 \end{frame}
 
-% starting in k8s by default less secure than starting in e.g. docker 
-
-\begin{frame}{Running With Scissors}
-  \url{https://www.youtube.com/watch?v=ltrV-Qmh3oY}
-% going from a "minimal" user to full root rights on all nodes
-\end{frame}
-
-% service account with pod * permissions
-% extract token
-% start privileged ubuntu pod
-% host filesystem as well?
-% nsenter -t 1 -a bash
-% create invisible pod (non-existing namespace static pod)
 
 \begin{frame}{OWASP Kubernetes Top Ten}
   {\url{https://owasp.org/www-project-kubernetes-top-ten/}}
@@ -331,19 +339,22 @@
   \end{description}
 \end{frame}
 
+
 \begin{frame}{K10: Outdated and Vulnerable Kubernetes Components}
   \begin{itemize}
   \item Keep Kubernetes updated
-  \item Three most recent minor releases:
+  \item Currently supported releases:
     \begin{itemize}
     \item 1.28
     \item 1.27
     \item 1.26
+    \item 1.25
     \end{itemize}
   \item $\sim$1 year support
   \item Distributions may be supported longer
   \end{itemize}
 \end{frame}
+
 
 \begin{frame}{K09: Misconfigured Cluster Components}
   \begin{itemize}
@@ -352,14 +363,14 @@
   \end{itemize}
 \end{frame}
 
+
 \begin{frame}{TASK: Using kube-bench}
  \begin{itemize}
+  \item Using kube-bench
   \item \url{https://killercoda.com/killer-shell-cks/scenario/cis-benchmarks-kube-bench-fix-controlplane}
  \end{itemize}
 \end{frame}
 
-% TASK: run kube-bench
-% https://killercoda.com/killer-shell-cks/scenario/cis-benchmarks-kube-bench-fix-controlplane
 
 \begin{frame}{K08: Secrets Management Failures}
   \begin{itemize}
@@ -369,11 +380,6 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{TASK: encrypting ETCD}
- \begin{itemize}
-  \item \url{https://killercoda.com/killer-shell-cks/scenario/secret-etcd-encryption}
- \end{itemize}
-\end{frame}
 
 \begin{frame}{K07: Missing Network Segmentation Controls}
   \begin{itemize}
@@ -392,139 +398,43 @@
  
 \begin{frame}{TASK: Creating network policies}
  \begin{itemize}
-   \item \url{https://editor.networkpolicy.io/}
+   \item Practice creating network policies
    \item \url{https://killercoda.com/killer-shell-cks/scenario/networkpolicy-namespace-communication}
+   \item \url{https://editor.networkpolicy.io/}
  \end{itemize}
-\end{frame}  
- 
+\end{frame}
 
 
 \begin{frame}{K06: Broken Authentication Mechanisms}
   \begin{itemize}
     \item Certificates last until expiration
-      \item No certificate revocation list
     \item Service account tokens
-    \item use MFA if possible
+    \item Use MFA if possible
+    \item Be careful with service account tokens
   \end{itemize}
 \end{frame}
 
-% DEMO: rancher - github
-
 \begin{frame}{K05: Inadequate Logging and Monitoring}
   \begin{itemize}
-  \item Audit logs, logs in external system
-  \item Falco etc for monitoring
-  \item Fluentbit etc
-  \item Loki
+  \item Save logs in an external system
+  \begin{itemize}
+   \item Kubernetes Audit logs
+   \item Application/container logs
+   \item Event logs
+   \item Operating system logs
+   \item Network logs
+  \end{itemize}
+  \item \textbf{Monitor the logs}
   \end{itemize}
 \end{frame}
 
 \begin{frame}{K04: Lack of Centralized Policy Enforcement}
   \begin{itemize}
-  \item OPA Gatekeeper, Kyverno
-  \item ``Policies in git''
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{TASK: Using Kyverno}
- https://killercoda.com/kyverno/scenario/intro
-\end{frame}
-
-\begin{frame}
-  \begin{itemize}
-  \item GitOps --- Argo
-  \item Infrastructure as code
-  \item Ansible
-  \item ``Replace one node every month''
-  \end{itemize}
-\end{frame}
-
-% DEMO: Argo
-
-\begin{frame}{K03: Overly Permissive RBAC Configurations}
-  \begin{itemize}
-  \item Least Privilege
-  \item Service account and user RBAC permissions
-  \item Limit use of ClusterRoleBinding
-  \item Not everyone needs admin permissions
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{K02: Supply Chain Vulnerabilities}
-  \begin{itemize}
-  \item Security vulnerabilities in third-party libraries
-  \item Insecure/malicious images
-  \item Container signing
-  \item Image minimisation
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Supply Chain Vulnerabilities}
-  \begin{itemize}
-  \item Signing
-  \item Do not use untrusted images
-  \end{itemize}
-  Signing
-
-\end{frame}
-
-
-\begin{frame}{K01: Insecure Workload Configurations}
-  \begin{itemize}
-  \item Scanners: kube-score, kubesec, kubeaudit, snyk ...
+  \item Policies about what may run on the cluster
+  \item Policies as Code --- PaC
   \item Pod Security Standards
-  \item Pod admission: kyverno, Open Policy Agent Gatekeeper
-  \end{itemize}
-\end{frame}
-
-% Root user/group
-% do not mount token
-% service account - do not mount token
-% apparmor/seccomp
-% immutability
-% container drift - neuvector
-
-\begin{frame}{No root}
-  \begin{itemize}
-    \item 
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Service account tokens}
-  \begin{itemize}
-    \item 
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{TASK: attack token}
-  \begin{itemize}
-    \item 
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Apparmor/seccomp}
-  \begin{itemize}
-    \item 
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Immutability}
-  \begin{itemize}
-    \item 
-  \end{itemize}
-\end{frame}
-
-% TASK: Make deployment follow Pod security standard - restricted 
-
-\begin{frame}{Enforcement}
-  \begin{itemize}
-    \item 
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Gitops}
-  \begin{itemize}
-    \item 
+  \item OPA Gatekeeper
+  \item Kyverno
   \end{itemize}
 \end{frame}
 
@@ -538,6 +448,145 @@
   \end{itemize}
 \end{frame}
 
+\begin{frame}{OPA Gatekeeper}
+ \begin{itemize}
+  \item Open Policy Agent
+  \item Rego
+  \item OPA Gatekeeper
+  \item Contstraint templates
+  \item Constraints
+  \item \url{https://killercoda.com/opa/scenario/intro}
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Kyverno}
+ \begin{itemize}
+  \item YAML
+  \item Kubernetes-native
+  \url{https://killercoda.com/kyverno/scenario/intro}
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame}{K03: Overly Permissive RBAC Configurations}
+  \begin{itemize}
+  \item Least Privilege
+  \item Service account and user RBAC permissions
+  \item Limit use of ClusterRoleBinding
+  \item Not everyone needs admin permissions
+  \item Be careful with service account tokens
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{K02: Supply Chain Vulnerabilities}
+  \begin{itemize}
+  \item Security vulnerabilities in third-party libraries
+  \item Insecure/malicious images
+  \begin{itemize}
+   \item Do not use untrusted images
+  \end{itemize}
+  \item Secure the CI/CD pipelines
+  \item Software bill of materials (SBOM)
+  \item Container signing
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{K01: Insecure Workload Configurations}
+  \begin{itemize}
+  \item A container in Kubernetes is by default less secure than in Docker
+  \item Need to improve the configuration
+  \item Tools:
+  \begin{itemize}
+   \item kube-score
+   \item kubesec
+   \item snyk
+  \end{itemize}
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame}{No root}
+  \begin{itemize}
+    \item securityContext
+    \begin{itemize}
+      \item runAsUser
+      \item runAsGroup
+      \item allowPrivilegeEscalation
+      \item privileged
+      \item runAsNonRoot
+      \item capabilities
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Service account tokens}
+  \begin{itemize}
+    \item Never mount service account tokens unless they are needed
+    \item \texttt{automountServiceAccountToken: false}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Apparmor, Seccomp, SELinux}
+  \begin{itemize}
+    \item Use Seccomp, SELinux, and Apparmor
+    \begin{itemize}
+     \item Must be supported by the hosts
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Seccomp and SELinux}
+\begin{verbatim}
+ securityContext:
+  seccompProfile:
+    type: RuntimeDefault
+  seLinuxOptions:
+    level: "s0:c123,c456"
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{Apparmor}
+\begin{verbatim}
+spec:
+  template:
+    metadata:
+      annotations:
+        container.apparmor.security.beta.kubernetes.io/containername: runtime/default
+\end{verbatim}
+\end{frame}
+
+
+
+\begin{frame}{Immutability}
+  \begin{itemize}
+    \item A container should be immutable
+    \item \texttt{readOnlyRootFilesystem: true}
+    \item Binaries can be run without being saved to disk
+    \item Add emptyDirs if specific folders need writing 
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Enforcement}
+\begin{itemize}
+ \item Pre-deployment:
+ \begin{itemize}
+  \item kube-score
+  \item kubesec
+  \item kubeaudit
+  \item snyk
+ \end{itemize}
+ \item Admission:
+ \begin{itemize}
+  \item Pod security standards
+  \item Kyverno
+  \item OPA Gatekeeper
+ \end{itemize}
+\end{itemize}
+\end{frame}
+
 \begin{frame}{TASK: Create a hardened deployment}
   \begin{itemize}
   \item Make a deployment of \texttt{ghcr.io/scilifelabdatacentre/menu-backend:latest}
@@ -548,6 +597,8 @@
 \end{frame}
 
 
+\section{Cloud}
+
 \begin{frame}{Host security}
   \begin{itemize}
   \item Hardening
@@ -557,6 +608,18 @@
   \end{itemize}
 \end{frame}
 
+\section{Final Thoughts}
+
+\begin{frame}{GitOps}
+ \begin{itemize}
+  \item Using a Git repository as the source of truth
+  \item Any changes are committed to Git
+  \item Current cluster state always saved to Git
+  \item Argo, Flux
+  \item Analysis tools can be run as part of CI
+  \item Adds non-repudiation to any changes
+ \end{itemize}
+\end{frame}
 
 \begin{frame}{Compliance}
   \begin{itemize}
@@ -571,6 +634,20 @@
   \item Defence in depth (layered security)
   \item Zero Trust
   \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \begin{center}
+  \LARGE Keep on learning!
+ \end{center}  
+\end{frame}
+
+\begin{frame}
+ \begin{center}
+  \LARGE Thank you for listening!
+  \vspace{20pt}
+  \Large Questions?
+ \end{center}  
 \end{frame}
 
 \end{document}
