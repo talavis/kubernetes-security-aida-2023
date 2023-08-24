@@ -2,7 +2,7 @@
 
 % Presentation info
 \title{Kubernetes}
-\subtitle{Security and stuff}
+\subtitle{Security in cloud-native environments}
 \author{Linus Östberg}
 \newcommand{\authorEmail}{linus@scilifelab.uu.se}
 \institute{SciLifeLab Data Centre}
@@ -226,16 +226,6 @@
   \item Optimal security: define a specialised profile for each container
   \item Using the "runtime default" is better than nothing
   \end{itemize}
-\end{frame}
-
-\begin{frame}{TASK: using Apparmor}
- \begin{itemize}
-  \item \texttt{\scriptsize container.apparmor.security.beta.kubernetes.io/<container\_name>: <profile\_ref>}
-  \item \texttt{runtime/default}
-  \item \texttt{localhost/k8s-apparmor-deny-everything}
-  \item Create profile, make sure it exists on all nodes where the container may run
-  \item \url{https://killercoda.com/killer-shell-cks/scenario/apparmor}
- \end{itemize}
 \end{frame}
 
 \begin{frame}{Supply Chain Security}
@@ -644,8 +634,8 @@ spec:
 
 \begin{frame}
  \begin{center}
-  \LARGE Thank you for listening!
-  \vspace{20pt}
+  \LARGE Thank you for listening!\\
+  \vspace{30pt}
   \Large Questions?
  \end{center}  
 \end{frame}
